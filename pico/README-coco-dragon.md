@@ -18,6 +18,7 @@ Games that are tightly sync'd to the beam are likely to have a lot of screen wei
 
 Compilation is
 
+```
 git clone https://github.com/markadev/AppleII-VGA.git ~/AppleII-VGA
 cd ~/AppleII-VGA/pico
 mkdir build
@@ -27,4 +28,5 @@ make
 $ ls *uf2
 ...
 applevga.uf2
+```
 
