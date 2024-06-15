@@ -1,5 +1,22 @@
 # Apple II VGA Card
 
+Well ... sort of . This 'main' branch is the normal AppleII-VGA project for a 
+Apple II computer. But I've created a collection of experimental branches that
+try to do the same thing for other computers:
+ * mc6847-mc6883 - VGA output for Tandy Color Computers (1 and 2) and Dragon 32/64
+ * tms9918a - VGA output for TMS9918A based systems such as MSX1. As I don't have 
+   a proper MSX1 computer the code is for my own MSX1 breadboard computer and would
+   required simple modifications to work on a real MSX1 computer.
+ * v9938 - VGA output for V9938 VDP chips (i.e MSX2). This doesn't actually work, 
+   but kinda looks cool.
+ * zx-spectrum - VGA output for a normal ZX Spectrum 48K.
+
+I have a blog post here ; https://www.kernelcrash.com/blog/appleii-vga-and-emulating-other-retro-video-subsystems/ 
+that has some pretty pictures and a lot more detail.
+...
+
+Anyway, the rest of the original Apple II-VGA README is below:
+
 This project is a VGA card for Apple II computers to ouput a crisp RGB signal to a
 VGA monitor instead of having to rely on the composite output. This is accomplished
 by snooping the 6502 bus and creating a shadow copy of the video memory within a
