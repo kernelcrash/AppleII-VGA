@@ -16,26 +16,13 @@ git -C ~/pico-sdk submodule update --init
 export PICO_SDK_PATH=~/pico-sdk
 ```
 
-## Build the firmware for Apple IIe
+## Build the firmware for MSX2
 ```shell
 git clone https://github.com/markadev/AppleII-VGA.git ~/AppleII-VGA
 cd ~/AppleII-VGA/pico
 mkdir build
 cd build
-cmake -DAPPLE_MODEL=IIE -DCMAKE_BUILD_TYPE=Release ..
-make
-$ ls *uf2
-...
-applevga.uf2
-```
-
-## Build the firmware for Apple II+
-```shell
-git clone https://github.com/markadev/AppleII-VGA.git ~/AppleII-VGA
-cd ~/AppleII-VGA/pico
-mkdir build
-cd build
-cmake -DAPPLE_MODEL=IIPLUS -DCMAKE_BUILD_TYPE=Release ..
+cmake -DCOMPUTER_MODEL=V9938 -DCMAKE_BUILD_TYPE=Release ..
 make
 $ ls *uf2
 ...

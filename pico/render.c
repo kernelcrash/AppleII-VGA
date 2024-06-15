@@ -1,12 +1,13 @@
 #include "render.h"
 #include "buffers.h"
-#ifdef APPLE_MODEL_IIPLUS
+#include "v9938.h"
+#ifdef COMPUTER_MODEL_IIPLUS
 #include "videx_vterm.h"
 #endif
 
 
 void render_init() {
-    generate_hires_tables();
+    //generate_hires_tables();
 }
 
 
@@ -17,35 +18,7 @@ void render_loop() {
     }
 #else
     while(1) {
-        update_text_flasher();
-#ifdef APPLE_MODEL_IIPLUS
-        videx_vterm_update_flasher();
-#endif
-
-        switch(soft_switches & SOFTSW_MODE_MASK) {
-        case 0:
-            render_lores();
-            break;
-        case SOFTSW_MIX_MODE:
-            render_mixed_lores();
-            break;
-        case SOFTSW_HIRES_MODE:
-            render_hires(false);
-            break;
-        case SOFTSW_HIRES_MODE | SOFTSW_MIX_MODE:
-            render_hires(true);
-            break;
-        default:
-#ifdef APPLE_MODEL_IIPLUS
-            if(videx_vterm_enabled && videx_vterm_80col_enabled) {
-                render_videx_text();
-            } else
-#endif
-            {
-                render_text();
-            }
-            break;
-        }
+        render_v9938();
     }
 #endif
 }
