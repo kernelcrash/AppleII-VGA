@@ -1,7 +1,7 @@
 #include "textfont.h"
 
 
-#ifdef APPLE_MODEL_IIE
+#ifdef COMPUTER_MODEL_ZXSPECTRUM
 #define DEFAULT_CHARACTER_ROM textfont_iie_us_enhanced
 const uint8_t *default_character_rom = DEFAULT_CHARACTER_ROM;
 const uint8_t *character_roms[16] = {
@@ -24,7 +24,7 @@ const uint8_t *character_roms[16] = {
 };
 #endif
 
-#ifdef APPLE_MODEL_IIPLUS
+#ifdef COMPUTER_MODEL_IIPLUS
 #define DEFAULT_CHARACTER_ROM textfont_iiplus_us
 const uint8_t *default_character_rom = DEFAULT_CHARACTER_ROM;
 const uint8_t *character_roms[16] = {

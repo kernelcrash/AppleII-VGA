@@ -1,16 +1,16 @@
-.define public PHI0_GPIO 26
-
-; Apple II bus interface
-; Ref: Understanding the Apple II, pages 4-7, 7-8
+; wire Z80 _WR to the U4 LVC245 pin 16 which goes to GPIO pin 26 where the PHI0 would have gone. That means we pick up every write cycle
+; wire Z80 _MREQ to the U4 LVC245 pin 17 (which was ~DEVSEL) which goes to GPIO pin 8
+; wire Z80 _IORQ to the U4 LVC245 pin 18 (which was ~RW) which goes to GPIO pin 9
+.define public _WR_GPIO 26
 
 .program abus
 ; Prerequisites:
-;  * Bus clock used is PHI0, wired to GPIO 26
-;  * JMP pin is mapped to the R/W signal
-;  * IN pins are mapped to ~DEVSEL, R/W, and Data[7:0]
+;  * Z80 _WR goes via LVC245 to GPIO 26
+;  * JMP pin not used
+;  * IN pins are mapped to _MREQ and _IORQ and Data[7:0]
 ;  * SET pins are mapped to the transceiver enable signals
 ;  * input shift left & autopush @ 26 bits
-;  * run at about 125MHz (8ns/instruction)
+;  * run at about 252MHz (4ns/instruction)
 ;
 ; SET bits for tranceiver control:
 ;  0bxxx
@@ -20,8 +20,9 @@
 .wrap_target
 next_bus_cycle:
     set PINS, 0b011                     ; enable AddrHi tranceiver
-    wait 1 GPIO, PHI0_GPIO              ; wait for PHI0 to rise. Data propagation through the transceiver should
+    wait 0 GPIO, _WR_GPIO [5]          ; wait for _WR to go low. Data propagation through the transceiver should
                                         ; be complete by the time this happens.
+    set PINS, 0b011 [5]                 ; enable AddrHi tranceiver
 
     ; the current time is P0+42ns (P0 + 18ns (buffer + clock input delays) + 2 clocks (input synchronizers) + 1 instruction)
 
@@ -29,19 +30,12 @@ next_bus_cycle:
     set PINS, 0b101  [5]                ; enable AddrLo tranceiver and delay for transceiver propagation delay
     in PINS, 8                          ; read AddrLo[7:0]
 
-    jmp PIN, read_cycle                 ; jump based on the state of the R/W pin
-
 write_cycle:
-    ; the current time is P0+114ns (P0 + 18ns (buffer + clock input delays) + 2 clocks (input synchronizers) + 10 instructions)
+    ; the current time is unknown
 
-    set PINS, 0b110  [15]               ; enable Data tranceiver & wait until both ~DEVSEL and the written data are valid (P0+200ns)
-    in PINS, 10                         ; read R/W, ~DEVSEL, and Data[7:0], then autopush
-    wait 0 GPIO, PHI0_GPIO  [7]         ; wait for PHI0 to fall
+    set PINS, 0b110  [5]               ; enable Data tranceiver & wait until both _RFSH (connected to ~DEVSEL)  and the written data are valid (P0+200ns)
+    in PINS, 10                         ; read R/W, _RFSH, and Data[7:0], then autopush
+    wait 1 GPIO, _WR_GPIO  [7]         ; wait for _MREQ to rise
     jmp next_bus_cycle
 
-read_cycle:
-    ; the current time is P0+114ns (P0 + 18ns (buffer + clock input delays) + 2 clocks (input synchronizers) + 10 instructions)
-
-    in PINS, 10                         ; read R/W, ~DEVSEL, and dontcare[7:0], then autopush
-    wait 0 GPIO, PHI0_GPIO   [7]        ; wait for PHI0 to fall
 .wrap

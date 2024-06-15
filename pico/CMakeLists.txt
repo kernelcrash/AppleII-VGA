@@ -6,11 +6,13 @@ include(cmake/pico_sdk_import.cmake)
 project(applevga)
 set(CMAKE_C_STANDARD 11)
 
-set(APPLE_MODEL "IIPLUS" CACHE STRING "The model of Apple II to support")
-message("Target Apple model is ${APPLE_MODEL}")
-add_definitions(-DAPPLE_MODEL_${APPLE_MODEL}=1)
+set(COMPUTER_MODEL "IIPLUS" CACHE STRING "The model of computer to support")
+message("Target COmputer model is ${COMPUTER_MODEL}")
+add_definitions(-DCOMPUTER_MODEL_${COMPUTER_MODEL}=1)
 
 pico_sdk_init()
+
+set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -g -DCONFIG_SYSCLOCK=252 -DPICO_FLASH_SPI_CLKDIV=8")
 
 add_compile_options(-Wall -Wextra -Wnull-dereference -Wno-unused-parameter -Wno-unused-function)
 
@@ -31,15 +33,11 @@ target_sources(applevga PUBLIC
     buffers.c
     colors.c
     config.c
-    device_regs.c
     render.c
-    render_hires.c
-    render_lores.c
     render_testpat.c
-    render_text.c
     ${TEXTFONT_SRC_FILES}
     vga.c
-    videx_vterm.c
+    zx_spectrum.c
 )
 target_include_directories(applevga PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
 target_link_libraries(applevga PUBLIC

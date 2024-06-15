@@ -5,7 +5,8 @@
 #include "colors.h"
 #include "config.h"
 #include "textfont/textfont.h"
-#ifdef APPLE_MODEL_IIPLUS
+#include "zx_spectrum.h"
+#ifdef COMPUTER_MODEL_IIPLUS
 #include "videx_vterm.h"
 #endif
 
@@ -21,7 +22,7 @@ void device_write(uint_fast8_t reg, uint_fast8_t data) {
             soft_scanline_emulation = true;
         if(data & 0x02)
             soft_scanline_emulation = false;
-#ifdef APPLE_MODEL_IIPLUS
+#ifdef COMPUTER_MODEL_IIPLUS
         if(data & 0x04)
             videx_vterm_enable();
         if(data & 0x08)
@@ -31,14 +32,12 @@ void device_write(uint_fast8_t reg, uint_fast8_t data) {
 
     // soft-monochrome color setting
     case 0x01:
-        if(data & 0x03)
+        if(data & 0xf) {
             mono_fg_color = mono_fg_colors[data & 0x3];
-        if(data & 0x30)
+        }
+        if(data & 0xf0) {
             mono_bg_color = mono_bg_colors[(data >> 4) & 0x3];
-        if(data & 0x40)
-            soft_force_alt_textcolor = true;
-        if(data & 0x80)
-            soft_force_alt_textcolor = false;
+        }
         break;
 
     // character generator write offset
