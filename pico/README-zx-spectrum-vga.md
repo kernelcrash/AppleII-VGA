@@ -18,7 +18,7 @@ What is this?
 
 
 - Note the different way to build it
-
+```
 git clone https://github.com/markadev/AppleII-VGA.git ~/AppleII-VGA
 cd ~/AppleII-VGA/pico
 mkdir build
@@ -28,4 +28,5 @@ make
 $ ls *uf2
 ...
 applevga.uf2
+```
 
