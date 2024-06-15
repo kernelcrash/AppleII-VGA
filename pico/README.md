@@ -16,31 +16,19 @@ git -C ~/pico-sdk submodule update --init
 export PICO_SDK_PATH=~/pico-sdk
 ```
 
-## Build the firmware for Apple IIe
+## Build the firmware for Coco/Dragon (there is no seperate Dragon version)
 ```shell
 git clone https://github.com/markadev/AppleII-VGA.git ~/AppleII-VGA
 cd ~/AppleII-VGA/pico
 mkdir build
 cd build
-cmake -DAPPLE_MODEL=IIE -DCMAKE_BUILD_TYPE=Release ..
+cmake -DCOMPUTER_MODEL=COCO -DCMAKE_BUILD_TYPE=Release ..
 make
 $ ls *uf2
 ...
 applevga.uf2
 ```
 
-## Build the firmware for Apple II+
-```shell
-git clone https://github.com/markadev/AppleII-VGA.git ~/AppleII-VGA
-cd ~/AppleII-VGA/pico
-mkdir build
-cd build
-cmake -DAPPLE_MODEL=IIPLUS -DCMAKE_BUILD_TYPE=Release ..
-make
-$ ls *uf2
-...
-applevga.uf2
-```
 
 ## Install the firmware
 Hold down the BOOTSEL button and connect the Raspberry Pi Pico to your PC via micro USB cable. Once Pico is

@@ -28,3 +28,7 @@ extern const uint8_t textfont_clone_pravetz_cyrillic[256 * 8];
 
 extern const uint8_t videx_normal[128 * 16];
 extern const uint8_t videx_inverse[128 * 16];
+
+extern const uint8_t mc6847_normal[64 * 12];
+extern const uint8_t mc6847_semi_graph_4[16 * 12];
+

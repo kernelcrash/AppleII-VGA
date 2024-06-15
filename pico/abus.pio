@@ -20,8 +20,9 @@
 .wrap_target
 next_bus_cycle:
     set PINS, 0b011                     ; enable AddrHi tranceiver
-    wait 1 GPIO, PHI0_GPIO              ; wait for PHI0 to rise. Data propagation through the transceiver should
+    wait 1 GPIO, PHI0_GPIO [5]          ; wait for PHI0 to rise. Data propagation through the transceiver should
                                         ; be complete by the time this happens.
+    set PINS, 0b011 [5]                 ; enable AddrHi tranceiver
 
     ; the current time is P0+42ns (P0 + 18ns (buffer + clock input delays) + 2 clocks (input synchronizers) + 1 instruction)
 
@@ -34,7 +35,7 @@ next_bus_cycle:
 write_cycle:
     ; the current time is P0+114ns (P0 + 18ns (buffer + clock input delays) + 2 clocks (input synchronizers) + 10 instructions)
 
-    set PINS, 0b110  [15]               ; enable Data tranceiver & wait until both ~DEVSEL and the written data are valid (P0+200ns)
+    set PINS, 0b110  [31]               ; enable Data tranceiver & wait until both ~DEVSEL and the written data are valid (P0+200ns)
     in PINS, 10                         ; read R/W, ~DEVSEL, and Data[7:0], then autopush
     wait 0 GPIO, PHI0_GPIO  [7]         ; wait for PHI0 to fall
     jmp next_bus_cycle
