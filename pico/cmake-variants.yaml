@@ -12,17 +12,12 @@ buildType:
       long: Disable optimizations for debugging
       buildType: Debug
 
-appleModel:
-  description: The model of Apple II to support
-  default: iiplus
+computerModel:
+  description: The model of Computer to support
+  default: tms9918a
   choices:
-    iiplus:
-      short: II+
-      long: Support Apple II and II+ video features
+    tms9918a:
+      short: tms9918a
+      long: Support TMS9918A features
       settings:
-        APPLE_MODEL: IIPLUS
-    iie:
-      short: IIe
-      long: Support Apple IIe video features
-      settings:
-        APPLE_MODEL: IIE
+        COMPUTER_MODEL: TMS9918A
