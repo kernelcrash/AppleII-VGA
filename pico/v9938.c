@@ -996,6 +996,8 @@ void v9938_refresh_line(int line) {
 				//int y, p, height, c, p2, n, pattern, colourmask, first_cc_seen;
 
 				//for (int i=0;i<256;i++) { col[i]=0; }
+				memset(col, 0, 256);
+
 
 				//attrtbl_addr = ( (m_cont_reg[5] & 0xfc) << 7) + (m_cont_reg[11] << 15);
 				//colourtbl_addr =  ( (m_cont_reg[5] & 0xf8) << 7) + (m_cont_reg[11] << 15);
@@ -1067,57 +1069,70 @@ void v9938_refresh_line(int line) {
 								{
 									if ( (pattern & 0x8000) && !(col[x] & 0x10) )
 									{
+										// TODO: Anything to do with collision detection can be removed at a later date
 										if ( (c & 15) || (m_cont_reg[8] & 0x20) )
 										{
-											//if ( !(c & 0x40) )
-											//{
-											//	if (col[x] & 0x20) col[x] |= 0x10;
-											//	else {
-											//		col[x] |= 0x20 | (c & 15);
-											//	}
-										//	
-											//}
-											//else {
-											//	col[x] |= c & 15;
-											//}
-
-											//col[x] |= 0x80;
-											uint_fast32_t last_pixel_pair = sl->data[sl_pos_line_start + (x>>1)];
-											if (m_mode != V9938_MODE_GRAPHIC5) {
-												if (x & 1) {
-													sl->data[sl_pos_line_start + (x>>1)] = (last_pixel_pair & 0x0000ffff) | (( v9938_palette[c & 0x0f] | THEN_EXTEND_1) << 16);
+											if ( !(c & 0x40) )
+											{
+												if (col[x] & 0x20) {
+													col[x] |= 0x10;
 												} else {
-													sl->data[sl_pos_line_start + (x>>1)] = (last_pixel_pair & 0xffff0000) | ( v9938_palette[c & 0x0f] | THEN_EXTEND_1) ;
+													col[x] |= 0x20 | (c & 15);
+													uint_fast32_t last_pixel_pair = sl->data[sl_pos_line_start + (x>>1)];
+													if (m_mode != V9938_MODE_GRAPHIC5) {
+														if (x & 1) {
+															sl->data[sl_pos_line_start + (x>>1)] = (last_pixel_pair & 0x0000ffff) | (( v9938_palette[col[x] & 0x0f] | THEN_EXTEND_1) << 16);
+														} else {
+															sl->data[sl_pos_line_start + (x>>1)] = (last_pixel_pair & 0xffff0000) | ( v9938_palette[col[x] & 0x0f] | THEN_EXTEND_1) ;
+														}
+													} else {
+														// TODO. graphic5 sprites are actually rendered at 512 pix. THat means rewriting all the rendering engine stuff
+														if (x & 1) {
+															sl->data[sl_pos_line_start + (x>>1)] = (last_pixel_pair & 0x0000ffff) | (( v9938_palette[(col[x] >> 2) & 3] | THEN_EXTEND_1) << 16);
+														} else {
+															sl->data[sl_pos_line_start + (x>>1)] = (last_pixel_pair & 0xffff0000) | ( v9938_palette[(col[x] >> 2) & 3] | THEN_EXTEND_1) ;
+														}
+													}
 												}
 											} else {
-												// TODO. graphic5 sprites are actually rendered at 512 pix. THat means rewriting all the rendering engine stuff
-												if (x & 1) {
-													sl->data[sl_pos_line_start + (x>>1)] = (last_pixel_pair & 0x0000ffff) | (( v9938_palette[(c >> 2) & 3] | THEN_EXTEND_1) << 16);
+												col[x] |= c & 15;
+												uint_fast32_t last_pixel_pair = sl->data[sl_pos_line_start + (x>>1)];
+												if (m_mode != V9938_MODE_GRAPHIC5) {
+													if (x & 1) {
+														sl->data[sl_pos_line_start + (x>>1)] = (last_pixel_pair & 0x0000ffff) | (( v9938_palette[col[x] & 0x0f] | THEN_EXTEND_1) << 16);
+													} else {
+														sl->data[sl_pos_line_start + (x>>1)] = (last_pixel_pair & 0xffff0000) | ( v9938_palette[col[x] & 0x0f] | THEN_EXTEND_1) ;
+													}
 												} else {
-													sl->data[sl_pos_line_start + (x>>1)] = (last_pixel_pair & 0xffff0000) | ( v9938_palette[(c >> 2) & 3] | THEN_EXTEND_1) ;
+													// TODO. graphic5 sprites are actually rendered at 512 pix. THat means rewriting all the rendering engine stuff
+													if (x & 1) {
+														sl->data[sl_pos_line_start + (x>>1)] = (last_pixel_pair & 0x0000ffff) | (( v9938_palette[(col[x] >> 2) & 3] | THEN_EXTEND_1) << 16);
+													} else {
+														sl->data[sl_pos_line_start + (x>>1)] = (last_pixel_pair & 0xffff0000) | ( v9938_palette[(col[x] >> 2) & 3] | THEN_EXTEND_1) ;
+													}
 												}
 											}
 
-
+											col[x] |= 0x80;
 										}
 									}
 									else
 									{
-										//if ( !(c & 0x40) && (col[x] & 0x20) )
-										//	col[x] |= 0x10;
+										if ( !(c & 0x40) && (col[x] & 0x20) )
+											col[x] |= 0x10;
 									}
 
-									//if ( !(c & 0x60) && (pattern & 0x8000) )
-									//{
-									//	if (col[x] & 0x40)
-									//	{
-									//		// sprite collision!
-									//		if (p2 < 8)
-									//			m_stat_reg[0] |= 0x20;
-									//	}
-									//	else
-									//		col[x] |= 0x40;
-									//}
+									if ( !(c & 0x60) && (pattern & 0x8000) )
+									{
+										if (col[x] & 0x40)
+										{
+											// sprite collision!
+											if (p2 < 8)
+												m_stat_reg[0] |= 0x20;
+										}
+										else
+											col[x] |= 0x40;
+									}
 
 									x++;
 								}
