@@ -18,16 +18,20 @@ higher modes offered by the V9938. This is left here for 'interest' only.
 
 Not everything is implemented. This is just a Proof of Concept
 - Graphic 7 is not implemented at all
-- 9918 sprites render OK, but the V9938 extended sprite modes get the colours wrong
-- Lots of graphical errors when you have 8 sprites per horizontal line in the extended sprite modes. Show's
-up as flickering black horizontal lines and the lines below the sprites are pushed down. Basically the
-ARM CPU cannot render the entire horizontal line fast enough.
+- 9918 sprites render OK, and the extended sprites for the V9938 appear to work (including 'OR' colors)
+- The previous issue with lots of flickering when you had 8 sprites per line appears to be fixed, as I
+previously thought I was overclocking the pico ... but wasn't. Now that it is properly overclocked, you
+do not see the flickering.
 - All the blitter like operations of the V9938 are very flakey. In some games they appear to mostly work,
 with minor graphical errors. In terms of how the AppleII-VGA setup works, its amazing they appear to work at
 all. This is probably very hard to fix.
 
+Having said all that, it is amazing how well it actually works. The blitter problems I think are 'too hard'
+to solve properly, but in a lot of games there are only minor graphical errors due to this problem.
+
 Compilation is
 
+```
 git clone https://github.com/markadev/AppleII-VGA.git ~/AppleII-VGA
 cd ~/AppleII-VGA/pico
 mkdir build
@@ -37,4 +41,4 @@ make
 $ ls *uf2
 ...
 applevga.uf2
-
+```

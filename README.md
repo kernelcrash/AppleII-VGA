@@ -1,3 +1,5 @@
+NOTE: This is the v9938 branch. Look in pico/README-v9938.md for specific detail
+
 # Apple II VGA Card
 
 This project is a VGA card for Apple II computers to ouput a crisp RGB signal to a
